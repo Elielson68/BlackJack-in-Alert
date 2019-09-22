@@ -1,0 +1,614 @@
+﻿<script type="text/javascript">
+    jogo = true
+    jogo2 = true
+    jogo3 = true
+    //  INICIO PARTE 1
+    while (jogo) {
+        //baralho com as 56 cartas, incluindo as opções de 11 ou 1 do às.
+        baralho = [[1,11,2,3,4,5,6,7,8,9,10,10,10,10,1,11,2,3,4,5,6,7,8,9,10,10,10,10,1,11,2,3,4,5,6,7,8,9,10,10,10,10,1,11,2,3,4,5,6,7,8,9,10,10,10,10],[" As[♥]"," As[♥]"," [♥]"," [♥]"," [♥]"," [♥]"," [♥]"," [♥]"," [♥]"," [♥]"," [♥]"," Rei de [♥]"," Dama de [♥]"," Valete de [♥]"," As[♦]"," As[♦]"," [♦]"," [♦]"," [♦]"," [♦]"," [♦]"," [♦]"," [♦]"," [♦]"," [♦]"," Rei de [♦]"," Dama de [♦]"," Valete de [♦]"," As[♣]"," As[♣]"," [♣]"," [♣]"," [♣]"," [♣]"," [♣]"," [♣]"," [♣]"," [♣]"," [♣]"," Rei de [♣]"," Dama de [♣]"," Valete de [♣]"," As[♠]"," As[♠]"," [♠]"," [♠]"," [♠]"," [♠]"," [♠]"," [♠]"," [♠]"," [♠]"," [♠]"," Rei de [♠]"," Dama de [♠]"," Valete de [♠]"]]
+        mao_jogador = []
+        Dealer = []
+        saldo_jogador = 1000;
+        indice_sorteio1 = 0;
+        indice_sorteio2 = 0;
+        soma_mao_jogador = 0;
+        soma_mao_dealer = 0;
+        mao_inicial_dealer = 0;
+        rodadas = 0;
+        aposta = 0;
+        seguro = ""
+        split = [[],false]
+        alert("Bem-vindo ao BlackJackson.\nSeu objetivo é vencer o Dealer, para isso sua mão deve ser maior que a dele e menor ou igual a 21. Caso sua mão estoure, você perde. Caso obtenha um valor menor que a do Dealer, você perde. Caso sua mão seja 21 porém o Dealer consiga 21 com apenas duas cartas (blackjack) você perde.")
+        alert("Você possui exatamente 1000 reais como aposta, podendo apostar entre 5 a 100 reais a cada rodada.")
+        jogador = prompt("Está pronto para iniciar?\n1 - para Sim\n2 - para Não")
+        //Sair do jogo
+        if(jogador == 2){
+            jogo = false;
+        }
+        //Inicio do jogo PARTE 2
+        if(jogador==1){
+            jogo2 = true;
+            alert("Inicie escolhendo com que valor deseja apostar, após isso será liberado três opções de escolha: \n1 - Hit = Pegar uma carta.\n2 - Stand = Ficar com a mão atual.\n3 - Double = Dobrar a aposta e puxar 1 carta.\n4 - Separar = Em caso de cartas pares, dividir seu jogo em 2.\n5 - Seguro = Em caso do Dealer ter um Às, fazer um seguro. ")
+            //Segundo looping onde o jogo vai acontecer
+            while(jogo2 == true){
+                //Caso o número seja incorreto ou que ele deseje sair do jogo basta dizer que o jogo3 é false, então o looping voltara para cá novamente após a msg de erro
+                //Inicia o jogo perguntando quanto ele deseja apostar
+                seguro = ""
+                jogador = prompt("Seu saldo: R$ "+parseFloat(saldo_jogador).toFixed(2)+"\nQuanto deseja apostar?\nDigite apenas o número do valor desejado\nMin: R$ 5.\nMax: R$ 100\nCaso deseje encerrar, digite NADA.")
+                if(jogador >= 5 && jogador <= 100){
+                    jogo3 = true
+                    aposta = jogador;
+                    saldo_jogador -= aposta;
+                    //Inicio de jogo, com a aposta do jogador, criar looping agora, e dentro dele por as consequência de derrota e vitória e voltar novamente para cá
+                    //Iniicio de looping aqui.
+                    //Inicio de rodada, sorteio de duas cartas pro jogador
+                    indice_sorteio1 = parseInt(Math.random()*56)
+                    indice_sorteio2 = parseInt(Math.random()*56)
+                    //Aqui ele verifica se o Dealer tirou como primeira carta um 11, para por na mão dele um 1 para o jogador não ver qual o possível resultado da segunda carta.
+                    if(baralho[0][indice_sorteio1] == 11){//Caso seja 11 ele vai botar o 1 como string  e vai mostrar apenas o valor 1.
+                        Dealer.push("1" + baralho[1][indice_sorteio1],baralho[0][indice_sorteio2] + baralho[1][indice_sorteio2])
+                        soma_mao_dealer = baralho[0][1]+baralho[0][indice_sorteio2]
+                        mao_inicial_dealer = baralho[0][0]
+                        jogador = prompt("Dealer tirou um às, deseja fazer um seguro?\n1 - sim\n2 - não")
+                        if(jogador == 1){
+                            seguro = "\nSeguro: R$"+aposta/2
+                            saldo_jogador = parseFloat(saldo_jogador) - parseFloat(aposta/2)
+                        }
+                    }
+                    else{// Se não for ele vai adicionar no vetor normalmente
+                        Dealer.push(baralho[0][indice_sorteio1] + baralho[1][indice_sorteio1],baralho[0][indice_sorteio2] + baralho[1][indice_sorteio2])
+                        mao_inicial_dealer = baralho[0][indice_sorteio1]
+                    }//Se caso o valor do primeiro seja 1 e o do valor dois ser diferente de 11, ele vai fazer a soma, isso evita que o valor ultrapasse 21 pro dealer
+                    if(baralho[0][indice_sorteio1] == 1 && baralho[0][indice_sorteio2] != 11){
+                        soma_mao_dealer = baralho[0][1]+baralho[0][indice_sorteio2]
+                        mao_inicial_dealer = baralho[0][0]
+                        jogador = prompt("Dealer tirou um às, deseja fazer um seguro?\n1 - sim\n2 - não")
+                        if(jogador == 1){
+                            seguro = "\nSeguro: R$"+aposta/2
+                            saldo_jogador = parseFloat(saldo_jogador) - parseFloat(aposta/2)
+                        }
+                    }//a memsa coisa que o de cima só que pra segunda carta
+                    else if(baralho[0][indice_sorteio2] == 1 && baralho[0][indice_sorteio1] != 11){
+                        soma_mao_dealer = baralho[0][indice_sorteio1]+baralho[0][1]
+                        mao_inicial_dealer = baralho[0][indice_sorteio1]
+                    }
+                    else if (baralho[0][indice_sorteio2] == 11  && baralho[0][indice_sorteio1] != 11){
+                        soma_mao_dealer = baralho[0][indice_sorteio1]+baralho[0][1]
+                        mao_inicial_dealer = baralho[0][indice_sorteio1] 
+                    }
+                    else if (baralho[0][indice_sorteio2] == 11  && (baralho[0][indice_sorteio1] == 1 || baralho[0][indice_sorteio1] == 11)){
+                        soma_mao_dealer = baralho[0][0]+baralho[0][1]
+                        mao_inicial_dealer = baralho[0][indice_sorteio1] 
+                    }
+                    else if ((baralho[0][indice_sorteio1] != 1 && baralho[0][indice_sorteio1] != 11) && (baralho[0][indice_sorteio2] != 1 && baralho[0][indice_sorteio2] != 11)){// caso não seja àzes, então ele segue o baile
+                        soma_mao_dealer = baralho[0][indice_sorteio1]+baralho[0][indice_sorteio2]
+                        mao_inicial_dealer = baralho[0][indice_sorteio1]
+
+                    }
+                    indice_sorteio1 = parseInt(Math.random()*56)
+                    indice_sorteio2 = parseInt(Math.random()*56)
+                    //Aqui começa a loucura...Bom, isso aqui é pra verificar se o jogador tirou um Às nas primeiras cartas e dar a opção de ele escolehr entre o valor 1 ou 11, sendo que nesse primeiro if ele faz somente se uma das cartas for um às.
+                    //Nesse primeiro if ele verifica se as duas cartas são azes, se for ele entra.
+                    if((baralho[0][indice_sorteio1] == 1 || baralho[0][indice_sorteio1] == 11) && (baralho[0][indice_sorteio2] == 1 || baralho[0][indice_sorteio2] == 11)){
+
+                        if(baralho[0][indice_sorteio1] == 1 || baralho[0][indice_sorteio1] == 11){
+                            parseInt(jogador = prompt("Você tirou um Às, deseja ter o valor 1 ou 11?\nDigite 1 para 1.\n Digite 2 para 11.\nSua segunda carta é: "+baralho[0][indice_sorteio2] + baralho[1][indice_sorteio2]))
+                            if(jogador == 1){
+                                mao_jogador.push(baralho[0][0] + baralho[1][indice_sorteio1])
+                                soma_mao_jogador = baralho[0][0] 
+                            }
+                            else if(jogador == 2){
+                                mao_jogador.push(baralho[0][1] + baralho[1][indice_sorteio1])
+                                soma_mao_jogador = baralho[0][1]
+                            }
+                        }
+                        if(baralho[0][indice_sorteio2] == 1 || baralho[0][indice_sorteio2] == 11){
+                            jogador = parseInt(prompt("Você tirou um Às, deseja ter o valor 1 ou 11?\nDigite 1 para 1.\n Digite 2 para 11.\nSua primeira carta é: "+baralho[0][indice_sorteio1] + baralho[1][indice_sorteio1]))
+                            if(jogador == 1){
+                                mao_jogador.push(baralho[0][0] + baralho[1][indice_sorteio2])
+                                soma_mao_jogador += baralho[0][0] 
+                            }
+                            else if(jogador == 2){
+                                mao_jogador.push(baralho[0][1] + baralho[1][indice_sorteio2])
+                                soma_mao_jogador += baralho[0][1] 
+                            }
+                        }
+                    }
+                    //aqui ele verifica se apenas a primeira carta é às
+                    else if(baralho[0][indice_sorteio1] == 1 || baralho[0][indice_sorteio1] == 11 && baralho[0][indice_sorteio2] != 1 && baralho[0][indice_sorteio2] != 11){
+                            jogador = parseInt(prompt("Você tirou um Às, deseja ter o valor 1 ou 11?\nDigite 1 para 1.\n Digite 2 para 11.\nSua segunda carta é: "+baralho[0][indice_sorteio2] + baralho[1][indice_sorteio2]))
+                            if(jogador == 1){
+                                mao_jogador.push(baralho[0][0] + baralho[1][indice_sorteio1],baralho[0][indice_sorteio2] + baralho[1][indice_sorteio2])
+                                soma_mao_jogador = baralho[0][0]+ baralho[0][indice_sorteio2] 
+                            }
+                            if(jogador == 2){
+                                mao_jogador.push(baralho[0][1] + baralho[1][indice_sorteio1],baralho[0][indice_sorteio2] + baralho[1][indice_sorteio2])
+                                soma_mao_jogador = baralho[0][1]+ baralho[0][indice_sorteio2] 
+                            }
+                        }
+                    //Aqui ele verifica se a segunda carta é às
+                    else if(baralho[0][indice_sorteio2] == 1 || baralho[0][indice_sorteio2] == 11 && baralho[0][indice_sorteio1] != 1 && baralho[0][indice_sorteio1] != 11){
+                            jogador = parseInt(prompt("Você tirou um Às, deseja ter o valor 1 ou 11?\nDigite 1 para 1.\n Digite 2 para 11.\nSua primeira carta é: "+baralho[0][indice_sorteio1] + baralho[1][indice_sorteio1]))
+                            if(jogador == 1){
+                                mao_jogador.push(baralho[0][indice_sorteio1] + baralho[1][indice_sorteio1],baralho[0][0] + baralho[1][indice_sorteio2])
+                                soma_mao_jogador = baralho[0][indice_sorteio1]+ baralho[0][0] 
+                            }
+                            if(jogador == 2){
+                                mao_jogador.push(baralho[0][indice_sorteio1] + baralho[1][indice_sorteio1],baralho[0][1] + baralho[1][indice_sorteio2])
+                                soma_mao_jogador = baralho[0][indice_sorteio1]+ baralho[0][1] 
+                            }
+                    }
+
+                    //Aqui é para caso nenhuma carta seja um às.
+                    if (baralho[0][indice_sorteio2] != 1 && baralho[0][indice_sorteio2] != 11 && baralho[0][indice_sorteio1] != 1 && baralho[0][indice_sorteio1] != 11){
+                        mao_jogador.push(baralho[0][indice_sorteio1] + baralho[1][indice_sorteio1],baralho[0][indice_sorteio2] + baralho[1][indice_sorteio2])
+                        soma_mao_jogador = baralho[0][indice_sorteio1]+ baralho[0][indice_sorteio2] 
+                    }
+                    //INICIO PARTE 4
+                }
+                else if(jogador == "NADA"){
+                    jogo = false
+                    break
+                }
+                else{
+                    jogo3 = false
+                }
+                while(jogo3 == true){
+                    //Verificando se fizeram Blackjack ou não de primeira]
+                    //Consertar a verificação, fazer com que a mão do Dealer seja lida apenas após a jogada do jogador.
+                    if(soma_mao_jogador == 21 && soma_mao_dealer == 21){
+                        alert("OS DOIS NA CAGAAAAAADA FIZERAM UM BLACKJACK, EMPATE\nRodadas: "+rodadas+"\nMão do Dealer: "+Dealer[0]+", [?]"+"\nSoma do Dealer: "+mao_inicial_dealer+"\n\nSuas cartas: "+mao_jogador+"\nSoma das cartas: "+soma_mao_jogador+"\nSua aposta: "+aposta+seguro+"\nSeu saldo: "+parseFloat(saldo_jogador.toFixed(2)))
+                        jogo3 = false
+                        saldo_jogador += parseFloat(aposta)
+                        aposta = 0;
+                        mao_jogador = []
+                        Dealer = []
+                        soma_mao_dealer = 0
+                        soma_mao_jogador = 0
+                        rodadas += 1
+                        break
+                    }
+                    //Porém caso o jogador pegue um blackjackson de prima, ele vence. Deixar só essa verificação aqui
+                    else if (soma_mao_jogador == 21){
+                        alert("você fez um BLACKJACK, You WIN\nRodadas: "+rodadas+"\nMão do Dealer: "+Dealer[0]+", [?]"+"\nSoma do Dealer: "+mao_inicial_dealer+"\n\nSuas cartas: "+mao_jogador+"\nSoma das cartas: "+soma_mao_jogador+"\nSua aposta: "+aposta+seguro+"\nSeu saldo: "+parseFloat(saldo_jogador.toFixed(2)))
+                        jogo3 = false
+                        aposta = aposta = parseFloat(aposta)+parseFloat(aposta*2/3)
+                        saldo_jogador = parseFloat(saldo_jogador)+parseFloat(aposta)
+                        aposta = 0;
+                        mao_jogador = []
+                        Dealer = []
+                        soma_mao_dealer = 0
+                        soma_mao_jogador = 0
+                        rodadas += 1
+                        break
+                    }
+                    else if (soma_mao_jogador > 21){
+                        alert("Você estorou a mão, e perdeu a vida\nRodadas: "+rodadas+"\nMão do Dealer: "+Dealer[0]+", [?]"+"\nSoma do Dealer: "+mao_inicial_dealer+"\n\nSuas cartas: "+mao_jogador+"\nSoma das cartas: "+soma_mao_jogador+"\nSua aposta: "+aposta+seguro+"\nSeu saldo: "+parseFloat(saldo_jogador.toFixed(2)))
+                            jogo3 = false
+                            aposta = 0;
+                            mao_jogador = []
+                            Dealer = []
+                            soma_mao_dealer = 0
+                            soma_mao_jogador = 0
+                            rodadas += 1
+                            break
+                    }
+                    jogador = prompt("Rodadas: "+rodadas+"\nMão do Dealer: "+Dealer[0]+", [?]"+"\nSoma do Dealer: "+mao_inicial_dealer+"\n\nSuas cartas: "+mao_jogador+"\nSoma das cartas: "+soma_mao_jogador+"\nSua aposta: "+aposta+seguro+"\nSeu saldo: "+parseFloat(saldo_jogador.toFixed(2))+"\n\nO que deseja fazer?\n1 - Hit\n2 - Stand\n3 - Double")
+                    //Função de Hit, aparentemente está funcionando corretamente
+                    if(jogador == 1){
+                            indice_sorteio1 = parseInt(Math.random()*56)
+                            if(baralho[0][indice_sorteio1] == 1 || baralho[0][indice_sorteio1] == 11){//verifica se ele tirou um às.
+                                parseInt(jogador = prompt("Você tirou um Às, deseja ter o valor 1 ou 11?\nDigite 1 para 1.\n Digite 2 para 11.\nSuas cartas são: "+mao_jogador))
+                                if(jogador == 1){
+                                    mao_jogador.push(baralho[0][0] + baralho[1][indice_sorteio1])
+                                    soma_mao_jogador += baralho[0][0] 
+                                }
+                                else if(jogador == 2){
+                                    mao_jogador.push(baralho[0][1] + baralho[1][indice_sorteio1])
+                                    soma_mao_jogador += baralho[0][1]
+                                }
+                            }
+                            else{
+                                mao_jogador.push(baralho[0][indice_sorteio1] + baralho[1][indice_sorteio1])
+                                soma_mao_jogador += baralho[0][indice_sorteio1] 
+                            }
+                            //verifica se o jogador estourou a mão ao puxar uma carta
+                            if(soma_mao_jogador > 21){
+                                alert("Você estorou a mão, e perdeu a vida\nRodadas: "+rodadas+"\nMão do Dealer: "+Dealer[0]+", [?]"+"\nSoma do Dealer: "+mao_inicial_dealer+"\n\nSuas cartas: "+mao_jogador+"\nSoma das cartas: "+soma_mao_jogador+"\nSua aposta: "+aposta+seguro+"\nSeu saldo: "+parseFloat(saldo_jogador.toFixed(2)))
+                                jogo3 = false
+                                aposta = 0;
+                                mao_jogador = []
+                                Dealer = []
+                                soma_mao_dealer = 0
+                                soma_mao_jogador = 0
+                                rodadas += 1
+                                break
+                            }
+                            //verifica se a soma dele deu 21 ao puxar uma carta
+                            if(soma_mao_jogador == 21 && soma_mao_dealer != 21){
+                                alert("você fez um 21, You WIN\nRodadas: "+rodadas+"\nMão do Dealer: "+Dealer[0]+", [?]"+"\nSoma do Dealer: "+mao_inicial_dealer+"\n\nSuas cartas: "+mao_jogador+"\nSoma das cartas: "+soma_mao_jogador+"\nSua aposta: "+aposta+seguro+"\nSeu saldo: "+parseFloat(saldo_jogador.toFixed(2)))
+                                jogo3 = false
+                                aposta = aposta = parseFloat(aposta)+parseFloat(aposta*2/3)
+                                saldo_jogador = parseFloat(saldo_jogador)+parseFloat(aposta)
+                                aposta = 0;
+                                mao_jogador = []
+                                Dealer = []
+                                soma_mao_dealer = 0
+                                soma_mao_jogador = 0
+                                rodadas += 1
+                                break
+                            }
+                            if(soma_mao_jogador == 21 && soma_mao_dealer == 21){
+                                alert("você EEMMMPATOU COM O DEEEALER\nRodadas: "+rodadas+"\nMão do Dealer: "+Dealer[0]+", [?]"+"\nSoma do Dealer: "+mao_inicial_dealer+"\n\nSuas cartas: "+mao_jogador+"\nSoma das cartas: "+soma_mao_jogador+"\nSua aposta: "+aposta+seguro+"\nSeu saldo: "+parseFloat(saldo_jogador.toFixed(2)))
+                                jogo3 = false
+                                saldo_jogador += parseFloat(aposta)
+                                aposta = 0;
+                                mao_jogador = []
+                                Dealer = []
+                                soma_mao_dealer = 0
+                                soma_mao_jogador = 0
+                                rodadas += 1
+                                break
+                            }
+                        }
+
+                    //função de Stand. Está funcionando bem, só fazer com que quando ele selecione essa opção que a carta da máquina seja virada e testada
+                    if(jogador == 2){
+                        //Verifica se a mão do Dealer a soma é menor que 16 para puxar cartas do baralho
+                            if(soma_mao_dealer <= 16){
+                                while(soma_mao_dealer<17){
+                                    indice_sorteio1 = parseInt(Math.random()*56)
+                                    if(baralho[0][indice_sorteio1] == 11 && soma_mao_dealer > 10){
+                                        Dealer.push(baralho[0][0] + baralho[1][indice_sorteio1])
+                                        soma_mao_dealer += baralho[0][0]
+                                    }
+                                    else if(baralho[0][indice_sorteio1] == 11 && soma_mao_dealer <= 10){
+                                        Dealer.push(baralho[0][1] + baralho[1][indice_sorteio1])
+                                        soma_mao_dealer += baralho[0][1]
+                                    }
+                                    else if(baralho[0][indice_sorteio1] == 1 && soma_mao_dealer <= 10){
+                                        Dealer.push(baralho[0][1] + baralho[1][indice_sorteio1])
+                                        soma_mao_dealer += baralho[0][1]
+                                    }
+                                    else{
+                                        Dealer.push(baralho[0][indice_sorteio1] + baralho[1][indice_sorteio1])
+                                        soma_mao_dealer += baralho[0][indice_sorteio1]
+                                    }
+
+                                }
+                                //após as cartas serem puxadas será testado se a mão do jogador é maior que a dor Dealer ou não
+                                if(soma_mao_jogador > soma_mao_dealer && soma_mao_jogador <= 21){
+                                    alert("Você venceu, chaparada!\nRodadas: "+rodadas+"\nMão do Dealer: "+Dealer[0]+", [?]"+"\nSoma do Dealer: "+mao_inicial_dealer+"\n\nSuas cartas: "+mao_jogador+"\nSoma das cartas: "+soma_mao_jogador+"\nSua aposta: "+aposta+seguro+"\nSeu saldo: "+parseFloat(saldo_jogador.toFixed(2)))
+                                    jogo3 = false
+                                    aposta = parseFloat(aposta)+parseFloat(aposta*2/3)
+                                  
+                                    saldo_jogador = parseFloat(saldo_jogador)+parseFloat(aposta)
+                                    aposta = 0;
+                                    mao_jogador = []
+                                    Dealer = []
+                                    soma_mao_dealer = 0
+                                    soma_mao_jogador = 0
+                                    rodadas += 1
+                                }
+                                //se a soma da mão do jogador for superior a 21 então significa que ele estourou a mão
+                                else if (soma_mao_jogador > soma_mao_dealer && soma_mao_jogador > 21){
+                                    alert("Você ESTOUROU A MÃO E PERDEU, CHAPORITO\nRodadas: "+rodadas+"\nMão do Dealer: "+Dealer[0]+", [?]"+"\nSoma do Dealer: "+mao_inicial_dealer+"\n\nSuas cartas: "+mao_jogador+"\nSoma das cartas: "+soma_mao_jogador+"\nSua aposta: "+aposta+seguro+"\nSeu saldo: "+parseFloat(saldo_jogador.toFixed(2)))
+                                    jogo3 = false
+                                    aposta = 0;
+                                    mao_jogador = []
+                                    Dealer = []
+                                    soma_mao_dealer = 0
+                                    soma_mao_jogador = 0
+                                    rodadas += 1
+                                }
+                                //Testa se a mão do jogador é menor que a do Dealer porém testa se a mão do Dealer não foi estourada
+                                else if (soma_mao_jogador < soma_mao_dealer && soma_mao_dealer <= 21){
+                                    alert("Você PERDEU, CHAPORITO\nRodadas: "+rodadas+"\nMão do Dealer: "+Dealer[0]+", [?]"+"\nSoma do Dealer: "+mao_inicial_dealer+"\n\nSuas cartas: "+mao_jogador+"\nSoma das cartas: "+soma_mao_jogador+"\nSua aposta: "+aposta+seguro+"\nSeu saldo: "+parseFloat(saldo_jogador.toFixed(2)))
+                                    jogo3 = false
+                                    aposta = 0;
+                                    mao_jogador = []
+                                    Dealer = []
+                                    soma_mao_dealer = 0
+                                    soma_mao_jogador = 0
+                                    rodadas += 1
+                                }
+                                //verifica se a mão do Dealer estouro
+                                else if(soma_mao_jogador < soma_mao_dealer && soma_mao_dealer > 21)   {
+                                    alert("Você venceu, chaparada!\nRodadas: "+rodadas+"\nMão do Dealer: "+Dealer[0]+", [?]"+"\nSoma do Dealer: "+mao_inicial_dealer+"\n\nSuas cartas: "+mao_jogador+"\nSoma das cartas: "+soma_mao_jogador+"\nSua aposta: "+aposta+seguro+"\nSeu saldo: "+parseFloat(saldo_jogador.toFixed(2)))
+                                    jogo3 = false
+                                    aposta = aposta = parseFloat(aposta)+parseFloat(aposta*2/3)
+                                  
+                                    saldo_jogador = parseFloat(saldo_jogador)+parseFloat(aposta)
+                                    aposta = 0;
+                                    mao_jogador = []
+                                    Dealer = []
+                                    soma_mao_dealer = 0
+                                    soma_mao_jogador = 0
+                                    rodadas += 1
+                                }
+                                // se a soma das mãos for igual então significa que empataram  
+                                else if (soma_mao_jogador == soma_mao_dealer){
+                                    alert("Você EMPATOU com o Dealer!\nRodadas: "+rodadas+"\nMão do Dealer: "+Dealer[0]+", [?]"+"\nSoma do Dealer: "+mao_inicial_dealer+"\n\nSuas cartas: "+mao_jogador+"\nSoma das cartas: "+soma_mao_jogador+"\nSua aposta: "+aposta+seguro+"\nSeu saldo: "+parseFloat(saldo_jogador.toFixed(2)))
+                                    jogo3 = false
+                                    saldo_jogador += parseFloat(aposta)
+                                    aposta = 0;
+                                    mao_jogador = []
+                                    Dealer = []
+                                    soma_mao_dealer = 0
+                                    soma_mao_jogador = 0
+                                    rodadas += 1
+                                }        
+                            }
+                            //Caso a mão dele seja maior que 16 então não será necessário puxar cartas, então ele vem direto pra cá e testa qual das mãos é maior
+                            else{
+                                if(soma_mao_jogador > soma_mao_dealer && soma_mao_jogador <= 21){
+                                    alert("Você venceu, chaparada!\nRodadas: "+rodadas+"\nMão do Dealer: "+Dealer[0]+", [?]"+"\nSoma do Dealer: "+mao_inicial_dealer+"\n\nSuas cartas: "+mao_jogador+"\nSoma das cartas: "+soma_mao_jogador+"\nSua aposta: "+aposta+seguro+"\nSeu saldo: "+parseFloat(saldo_jogador.toFixed(2)))
+                                    jogo3 = false
+                                    aposta = aposta = parseFloat(aposta)+parseFloat(aposta*2/3)
+                                   
+                                    saldo_jogador = parseFloat(saldo_jogador)+parseFloat(aposta)
+                                    aposta = 0;
+                                    mao_jogador = []
+                                    Dealer = []
+                                    soma_mao_dealer = 0
+                                    soma_mao_jogador = 0
+                                    rodadas += 1
+                                    break
+                                }
+                                //Se a soma da mao do jogador for maior que a do dealer porém a soma ultrapassar o valor 21 significa que o jogador estourou a mão
+                                else if (soma_mao_jogador > soma_mao_dealer && soma_mao_jogador > 21){
+                                    alert("Você ESTOUROU A MÃO E PERDEU, CHAPORITO\nRodadas: "+rodadas+"\nMão do Dealer: "+Dealer[0]+", [?]"+"\nSoma do Dealer: "+mao_inicial_dealer+"\n\nSuas cartas: "+mao_jogador+"\nSoma das cartas: "+soma_mao_jogador+"\nSua aposta: "+aposta+seguro+"\nSeu saldo: "+parseFloat(saldo_jogador.toFixed(2)))
+                                    jogo3 = false
+                                    aposta = 0;
+                                    mao_jogador = []
+                                    Dealer = []
+                                    soma_mao_dealer = 0
+                                    soma_mao_jogador = 0
+                                    rodadas += 1
+                                    break
+                                }
+                                //Testa se a mão do jogador é menor que a do Dealer porém testa se a mão do Dealer não foi estourada
+                                else if (soma_mao_jogador < soma_mao_dealer && soma_mao_dealer < 21){
+                                    alert("Você PERDEU, CHAPORITO\nRodadas: "+rodadas+"\nMão do Dealer: "+Dealer[0]+", [?]"+"\nSoma do Dealer: "+mao_inicial_dealer+"\n\nSuas cartas: "+mao_jogador+"\nSoma das cartas: "+soma_mao_jogador+"\nSua aposta: "+aposta+seguro+"\nSeu saldo: "+parseFloat(saldo_jogador.toFixed(2)))
+                                    jogo3 = false
+                                    aposta = 0;
+                                    mao_jogador = []
+                                    Dealer = []
+                                    soma_mao_dealer = 0
+                                    soma_mao_jogador = 0
+                                    rodadas += 1
+                                    break
+                                }
+                                //Se a mao do jogador for menor que a do dealer porém a soma do dealer seja igual a 21 então significa que ele fez um blackjack
+                                else if (soma_mao_jogador < soma_mao_dealer && soma_mao_dealer == 21){
+                                    alert("Você PERDEU, CHAPORITO, DEEEALER FEZ UM BLAAAAACKJACK\nRodadas: "+rodadas+"\nMão do Dealer: "+Dealer[0]+", [?]"+"\nSoma do Dealer: "+mao_inicial_dealer+"\n\nSuas cartas: "+mao_jogador+"\nSoma das cartas: "+soma_mao_jogador+"\nSua aposta: "+aposta+seguro+"\nSeu saldo: "+parseFloat(saldo_jogador.toFixed(2)))
+                                    jogo3 = false
+                                    aposta = 0;
+                                    if(seguro>1){
+                                        saldo_jogador = parseFloat(saldo_jogador)-parseFloat(seguro) 
+                                    }
+                                    saldo_jogador = parseFloat(saldo_jogador)+parseFloat(aposta)
+                                    mao_jogador = []
+                                    Dealer = []
+                                    soma_mao_dealer = 0
+                                    soma_mao_jogador = 0
+                                    rodadas += 1
+                                    break
+                                }
+                                //verifica se a mão do Dealer estouro
+                                else if(soma_mao_jogador < soma_mao_dealer && soma_mao_dealer > 21)   {
+                                    alert("Você venceu, chaparada!\nRodadas: "+rodadas+"\nMão do Dealer: "+Dealer[0]+", [?]"+"\nSoma do Dealer: "+mao_inicial_dealer+"\n\nSuas cartas: "+mao_jogador+"\nSoma das cartas: "+soma_mao_jogador+"\nSua aposta: "+aposta+seguro+"\nSeu saldo: "+parseFloat(saldo_jogador.toFixed(2)))
+                                    jogo3 = false
+                                    aposta = parseFloat(aposta)+parseFloat(aposta*2/3)
+                                  
+                                    saldo_jogador = parseFloat(saldo_jogador)+parseFloat(aposta)
+                                    aposta = 0;
+                                    mao_jogador = []
+                                    Dealer = []
+                                    soma_mao_dealer = 0
+                                    soma_mao_jogador = 0
+                                    rodadas += 1
+                                    break
+                                }
+                                else if (soma_mao_jogador == soma_mao_dealer){
+                                    alert("Você EMPATOU com o Dealer!\nRodadas: "+rodadas+"\nMão do Dealer: "+Dealer[0]+", [?]"+"\nSoma do Dealer: "+mao_inicial_dealer+"\n\nSuas cartas: "+mao_jogador+"\nSoma das cartas: "+soma_mao_jogador+"\nSua aposta: "+aposta+seguro+"\nSeu saldo: "+parseFloat(saldo_jogador.toFixed(2)))
+                                    jogo3 = false
+                                    saldo_jogador += parseFloat(aposta)
+                                    aposta = 0;
+                                    mao_jogador = []
+                                    Dealer = []
+                                    soma_mao_dealer = 0
+                                    soma_mao_jogador = 0
+                                    rodadas += 1
+                                    break
+                                } 
+                            }
+                        }
+
+                    //Função de Double, está funcionando corretamente, mas falta fazer o sistema caso o jogador esteja com a mão separada em pares.                   
+                    if(jogador == 3 && soma_mao_jogador >= 9 && soma_mao_jogador <= 15){
+                            saldo_jogador -= parseFloat(aposta)
+                            aposta = parseFloat(aposta) * 2
+                            indice_sorteio1 = parseInt(Math.random()*56)
+                            mao_jogador.push(baralho[0][indice_sorteio1] + baralho[1][indice_sorteio1])
+                            soma_mao_jogador += baralho[0][indice_sorteio1]
+
+                            if(soma_mao_dealer <= 16){
+                                while(soma_mao_dealer<17){
+                                    indice_sorteio1 = parseInt(Math.random()*56)
+                                    if(baralho[0][indice_sorteio1] == 11 && soma_mao_dealer > 10){
+                                        Dealer.push(baralho[0][0] + baralho[1][indice_sorteio1])
+                                        soma_mao_dealer += baralho[0][0]
+                                    }
+                                    else if(baralho[0][indice_sorteio1] == 11 && soma_mao_dealer <= 10){
+                                        Dealer.push(baralho[0][1] + baralho[1][indice_sorteio1])
+                                        soma_mao_dealer += baralho[0][1]
+                                    }
+                                    else if(baralho[0][indice_sorteio1] == 1 && soma_mao_dealer <= 10){
+                                        Dealer.push(baralho[0][1] + baralho[1][indice_sorteio1])
+                                        soma_mao_dealer += baralho[0][1]
+                                    }
+                                    else{
+                                        Dealer.push(baralho[0][indice_sorteio1] + baralho[1][indice_sorteio1])
+                                        soma_mao_dealer += baralho[0][indice_sorteio1]
+                                    }
+
+                                }
+                                //após as cartas serem puxadas será testado se a mão do jogador é maior que a dor Dealer ou não
+                                if(soma_mao_jogador > soma_mao_dealer && soma_mao_jogador <= 21){
+                                    alert("Você venceu, chaparada!\nRodadas: "+rodadas+"\nMão do Dealer: "+Dealer[0]+", [?]"+"\nSoma do Dealer: "+mao_inicial_dealer+"\n\nSuas cartas: "+mao_jogador+"\nSoma das cartas: "+soma_mao_jogador+"\nSua aposta: "+aposta+seguro+"\nSeu saldo: "+parseFloat(saldo_jogador.toFixed(2)))
+                                    jogo3 = false
+                                    saldo_jogador += parseFloat(aposta+(aposta*(2/3)))
+                                    aposta = 0;
+                                    mao_jogador = []
+                                    Dealer = []
+                                    soma_mao_dealer = 0
+                                    soma_mao_jogador = 0
+                                    rodadas += 1
+                                }
+                                else if (soma_mao_jogador > soma_mao_dealer && soma_mao_jogador > 21){
+                                    alert("Você ESTOUROU A MÃO E PERDEU, CHAPORITO\nRodadas: "+rodadas+"\nMão do Dealer: "+Dealer[0]+", [?]"+"\nSoma do Dealer: "+mao_inicial_dealer+"\n\nSuas cartas: "+mao_jogador+"\nSoma das cartas: "+soma_mao_jogador+"\nSua aposta: "+aposta+seguro+"\nSeu saldo: "+parseFloat(saldo_jogador.toFixed(2)))
+                                    jogo3 = false
+                                    aposta = 0;
+                                    mao_jogador = []
+                                    Dealer = []
+                                    soma_mao_dealer = 0
+                                    soma_mao_jogador = 0
+                                    rodadas += 1
+                                }
+                                //Testa se a mão do jogador é menor que a do Dealer porém testa se a mão do Dealer não foi estourada
+                                else if (soma_mao_jogador < soma_mao_dealer && soma_mao_dealer <= 21){
+                                    alert("Você PERDEU, CHAPORITO\nRodadas: "+rodadas+"\nMão do Dealer: "+Dealer[0]+", [?]"+"\nSoma do Dealer: "+mao_inicial_dealer+"\n\nSuas cartas: "+mao_jogador+"\nSoma das cartas: "+soma_mao_jogador+"\nSua aposta: "+aposta+seguro+"\nSeu saldo: "+parseFloat(saldo_jogador.toFixed(2)))
+                                    jogo3 = false
+                                    aposta = 0;
+                                    mao_jogador = []
+                                    Dealer = []
+                                    soma_mao_dealer = 0
+                                    soma_mao_jogador = 0
+                                    rodadas += 1
+                                }
+                                //verifica se a mão do Dealer estouro
+                                else if(soma_mao_jogador < soma_mao_dealer && soma_mao_dealer > 21)   {
+                                    alert("Você venceu, chaparada!\nRodadas: "+rodadas+"\nMão do Dealer: "+Dealer[0]+", [?]"+"\nSoma do Dealer: "+mao_inicial_dealer+"\n\nSuas cartas: "+mao_jogador+"\nSoma das cartas: "+soma_mao_jogador+"\nSua aposta: "+aposta+seguro+"\nSeu saldo: "+parseFloat(saldo_jogador.toFixed(2)))
+                                    jogo3 = false
+                                    saldo_jogador += parseFloat(aposta+(aposta*(2/3)))
+                                    aposta = 0;
+                                    mao_jogador = []
+                                    Dealer = []
+                                    soma_mao_dealer = 0
+                                    soma_mao_jogador = 0
+                                    rodadas += 1
+                                }
+                                else if (soma_mao_jogador == soma_mao_dealer){
+                                    alert("Você EMPATOU com o Dealer!\nRodadas: "+rodadas+"\nMão do Dealer: "+Dealer[0]+", [?]"+"\nSoma do Dealer: "+mao_inicial_dealer+"\n\nSuas cartas: "+mao_jogador+"\nSoma das cartas: "+soma_mao_jogador+"\nSua aposta: "+aposta+seguro+"\nSeu saldo: "+parseFloat(saldo_jogador.toFixed(2)))
+                                    jogo3 = false
+                                    saldo_jogador += parseFloat(aposta)
+                                    aposta = 0;
+                                    mao_jogador = []
+                                    Dealer = []
+                                    soma_mao_dealer = 0
+                                    soma_mao_jogador = 0
+                                    rodadas += 1
+                                    break
+                                }         
+                            }
+                            //Caso a mão dele seja maior que 16 então não será necessário puxar cartas, então ele vem direto pra cá e testa qual das mãos é maior
+                            else{
+                                if(soma_mao_jogador > soma_mao_dealer && soma_mao_jogador <= 21){
+                                    alert("Você venceu, chaparada!\nRodadas: "+rodadas+"\nMão do Dealer: "+Dealer[0]+", [?]"+"\nSoma do Dealer: "+mao_inicial_dealer+"\n\nSuas cartas: "+mao_jogador+"\nSoma das cartas: "+soma_mao_jogador+"\nSua aposta: "+aposta+seguro+"\nSeu saldo: "+parseFloat(saldo_jogador.toFixed(2)))
+                                    jogo3 = false
+                                    aposta = parseFloat(aposta)+parseFloat(aposta*2/3)
+                                    saldo_jogador = parseFloat(saldo_jogador)+parseFloat(aposta)
+                                    aposta = 0;
+                                    mao_jogador = []
+                                    Dealer = []
+                                    soma_mao_dealer = 0
+                                    soma_mao_jogador = 0
+                                    rodadas += 1
+                                }
+                                else if (soma_mao_jogador > soma_mao_dealer && soma_mao_jogador > 21){
+                                    alert("Você ESTOUROU A MÃO E PERDEU, CHAPORITO\nRodadas: "+rodadas+"\nMão do Dealer: "+Dealer[0]+", [?]"+"\nSoma do Dealer: "+mao_inicial_dealer+"\n\nSuas cartas: "+mao_jogador+"\nSoma das cartas: "+soma_mao_jogador+"\nSua aposta: "+aposta+seguro+"\nSeu saldo: "+parseFloat(saldo_jogador.toFixed(2)))
+                                    jogo3 = false
+                                    aposta = 0;
+                                    mao_jogador = []
+                                    Dealer = []
+                                    soma_mao_dealer = 0
+                                    soma_mao_jogador = 0
+                                    rodadas += 1
+                                }
+                                //Testa se a mão do jogador é menor que a do Dealer porém testa se a mão do Dealer não foi estourada
+                                else if (soma_mao_jogador < soma_mao_dealer && soma_mao_dealer <= 21){
+                                    alert("Você PERDEU, CHAPORITO\nRodadas: "+rodadas+"\nMão do Dealer: "+Dealer[0]+", [?]"+"\nSoma do Dealer: "+mao_inicial_dealer+"\n\nSuas cartas: "+mao_jogador+"\nSoma das cartas: "+soma_mao_jogador+"\nSua aposta: "+aposta+seguro+"\nSeu saldo: "+parseFloat(saldo_jogador.toFixed(2)))
+                                    jogo3 = false
+                                    aposta = 0;
+                                    mao_jogador = []
+                                    Dealer = []
+                                    soma_mao_dealer = 0
+                                    soma_mao_jogador = 0
+                                    rodadas += 1
+                                }
+                                //verifica se a mão do Dealer estouro
+                                else if(soma_mao_jogador < soma_mao_dealer && soma_mao_dealer > 21)   {
+                                    alert("Você venceu, chaparada!\nRodadas: "+rodadas+"\nMão do Dealer: "+Dealer[0]+", [?]"+"\nSoma do Dealer: "+mao_inicial_dealer+"\n\nSuas cartas: "+mao_jogador+"\nSoma das cartas: "+soma_mao_jogador+"\nSua aposta: "+aposta+seguro+"\nSeu saldo: "+parseFloat(saldo_jogador.toFixed(2)))
+                                    jogo3 = false
+                                    aposta = parseFloat(aposta)+parseFloat(aposta*2/3)
+                                    saldo_jogador = parseFloat(saldo_jogador)+parseFloat(aposta)
+                                    aposta = 0;
+                                    mao_jogador = []
+                                    Dealer = []
+                                    soma_mao_dealer = 0
+                                    soma_mao_jogador = 0
+                                    rodadas += 1
+                                }
+                                else if (soma_mao_jogador == soma_mao_dealer){
+                                    alert("Você EMPATOU com o Dealer!\nRodadas: "+rodadas+"\nMão do Dealer: "+Dealer[0]+", [?]"+"\nSoma do Dealer: "+mao_inicial_dealer+"\n\nSuas cartas: "+mao_jogador+"\nSoma das cartas: "+soma_mao_jogador+"\nSua aposta: "+aposta+seguro+"\nSeu saldo: "+parseFloat(saldo_jogador.toFixed(2)))
+                                    jogo3 = false
+                                    saldo_jogador += parseFloat(aposta)
+                                    aposta = 0;
+                                    mao_jogador = []
+                                    Dealer = []
+                                    soma_mao_dealer = 0
+                                    soma_mao_jogador = 0
+                                    rodadas += 1
+                                    break
+                                }    
+                            }
+
+                    }
+
+                    else if (jogador == 3 && soma_mao_jogador > 15 || jogador == 3 && soma_mao_jogador < 9){
+                        alert("Você não possui a mão necessária para fazer Double")
+                    }
+                }
+                
+            }
+        }
+
+    }
+
+    //Segunda parte do código fora do jogo.
+    //fim do jogo se sair no início
+    if(jogador == 2){
+        alert("Você desiste rápido demais, jovem.")
+    }
+    if(jogador == "NADA"){
+        alert("JOGO FINALIZADO!")
+    }
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
